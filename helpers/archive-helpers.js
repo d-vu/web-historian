@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var list = [];
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -32,23 +33,36 @@ exports.readListOfUrls = function(cb) {
     } else {
       var body = '';
       body += data;
-      body = body.split('\n');
-      console.log(body);
-      cb(body);
+      list = body.split('\n');
+      cb(list);
     }
   });
 };
 
 exports.isUrlInList = function(target, someCallback) {
-  someCallback(exports.readListOfUrls(function(body) {
-    return body;
+  someCallback(exports.readListOfUrls(function(list) {
+    return list;
   }));
 };
 
-exports.addUrlToList = function() {
+exports.addUrlToList = function(url, cb) {
+  list.push(url);
+  fs.writeFile(exports.paths.list, list.join('\n'), function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  cb();
 };
 
-exports.isUrlArchived = function() {
+exports.isUrlArchived = function(url, cb) {
+  var found = false;
+  list.forEach(function(item) {
+    if (url === item) {
+      found = true;
+    } 
+  });
+  return cb(found);
 };
 
 exports.downloadUrls = function() {

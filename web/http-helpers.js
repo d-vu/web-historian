@@ -38,9 +38,6 @@ exports.createAssets = function(req, res, filePath) {
   req.on('data', function(data) {
     requestBody = '';
     requestBody += data;
-    console.log(requestBody);
-    //body = JSON.parse(requestBody);
-    // console.log(body.url);
   });
   req.on('end', function() {
     fs.writeFile(filePath, requestBody.slice(4) + '\n', function(err) {

@@ -6,3 +6,5 @@ var httpHelper = require('../web/http-helpers');
 exports.htmlfetch = function () {
   archive.readListOfUrls(archive.downloadUrls);
 };
+
+exports.htmlfetch();

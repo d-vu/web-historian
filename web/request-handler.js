@@ -17,7 +17,7 @@ exports.handleRequest = function (req, res) {
       helper.serveAssets(res, filePath);
     } 
   } else if (req.method === 'POST') {
-    htmlFetch.htmlfetch();
+    // htmlFetch.htmlfetch();
     archive.createAssets(req, res, archive.paths.list);
   }
 };

@@ -21,11 +21,13 @@ exports.serveAssets = function(res, filePath, callback) {
   });
 
 
-  fs.readFile(filePath, function(error, filePath) {
+  fs.readFile(filePath, 'utf8', function(error, data) {
     if (error) {
       console.log(error);
     } else {
-      res.end(filePath);
+      console.log(data);
+      res.writeHead(200);
+      res.end(data);
     }
   });
   // Write some code here that helps serve up your static files!

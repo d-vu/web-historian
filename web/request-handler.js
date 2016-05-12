@@ -2,6 +2,7 @@ var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var helper = require('./http-helpers');
 var url = require('url');
+var htmlFetch = require('../workers/htmlfetcher');
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
@@ -15,8 +16,8 @@ exports.handleRequest = function (req, res) {
       var filePath = archive.paths.archivedSites + url.parse(req.url).pathname;
       helper.serveAssets(res, filePath);
     } 
-  //res.end(archive.paths.list);
   } else if (req.method === 'POST') {
+    htmlFetch.htmlfetch();
     archive.createAssets(req, res, archive.paths.list);
   }
 };

@@ -2,7 +2,8 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var http = require('http');
-var httpHelp = require('../web/request-handler');
+var httpHelp = require('../web/http-helpers');
+var request = require('request');
 
 var requestBody;
 
@@ -45,9 +46,17 @@ exports.readListOfUrls = function(cb) {
 var list = exports.readListOfUrls(function() {}) || [];
 
 exports.isUrlInList = function(target, someCallback) {
-  someCallback(exports.readListOfUrls(function(list) {
-    return list;
-  }));
+  var found = false;
+  //check readListOfUrls with target
+  var list = exports.readListOfUrls(function(urlArray) {
+    return urlArray;
+  });
+  for (var i = 0; i < list.length && !found; i++ ) {
+    if (list[i] === target) {
+      found = true;
+    }
+  }
+  someCallback(found);
 };
 
 exports.addUrlToList = function(url, cb) {
@@ -74,30 +83,28 @@ exports.downloadUrls = function(urlArray) {
   fs.readdir(exports.paths.archivedSites, function(err, files) {
     urlArray.forEach(function(item) {
       if (files.indexOf(item) === -1) {
-        fs.writeFile(exports.paths.archivedSites + '/' + item, exports.extractHtml(item), function(err) {
-          if (err) {
-            console.log(err);
-          } 
-          
-        });
+        exports.extractHTML(item);
       }
     }); 
   });
 };
 
-exports.extractHtml = function(url) {
+exports.extractHTML = function(url) {
   var options = {
-    host: url,
+    url: 'http://' + url,
     port: 80,
+    method: 'GET'
   };
-
-  http.get(options, function(res) {
-    console.log('Got a response:' + res.statusCode);
-
-  }).on('error', function(e) {
-    console.log('got an error: ' + e.message);
+  request(options, function(err, res, body) {
+    if (err) {
+      console.log(err);
+    }
+    fs.writeFile(exports.paths.archivedSites + '/' + url, body, function(err) {
+      if (err) {
+        console.log('write file error', err);
+      }
+    });
   });
- 
 };
 
 exports.createAssets = function(req, res, filePath) {
@@ -106,18 +113,15 @@ exports.createAssets = function(req, res, filePath) {
     requestBody += data;
   });
   req.on('end', function() {
-    requestBody = JSON.parse(requestBody).url;
-    exports.addUrlToList(requestBody.slice(4), function() {}); //url=www.google.com
-    // append to list
-    // write list
-
-    // fs.writeFile(filePath, requestBody.url.slice(4) + '\n', function(err) {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // });
-    res.writeHead(302, httpHelp.headers);
-    res.end();
+    requestBody = requestBody.slice(4);
+    var found = exports.isUrlArchived(requestBody, function(boolean) { return boolean; });
+    if (found) {
+      httpHelp.serveAssets(res, exports.paths.archivedSites + '/' + requestBody);
+    } else {
+      exports.addUrlToList(requestBody, function() {}); 
+      res.writeHead(302, httpHelp.headers);
+      res.end();
+    }
   });
 };
 

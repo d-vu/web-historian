@@ -65,5 +65,22 @@ exports.isUrlArchived = function(url, cb) {
   return cb(found);
 };
 
-exports.downloadUrls = function() {
+exports.downloadUrls = function(urlArray) {
+  fs.readdir(exports.paths.archivedSites, function(err, files) {
+    urlArray.forEach(function(item) {
+      if (files.indexOf(item) === -1) {
+        console.log(typeof item, item);
+        fs.writeFile(exports.paths.archivedSites + '/' + item, exports.extractHtml(item), function(err) {
+          if (err) {
+            console.log(err);
+          } 
+          
+        });
+      }
+    }); 
+  });
+};
+
+exports.extractHtml = function(url) {
+  // secret code
 };

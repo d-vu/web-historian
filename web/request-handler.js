@@ -9,7 +9,7 @@ exports.handleRequest = function (req, res) {
 
   if (req.method === 'GET') {
     if (url.parse(req.url).pathname === '/') {
-      var filePath = './web/public/index.html';
+      var filePath = archive.paths.siteAssets + '/index.html';
       helper.serveAssets(res, filePath);
     } else {
       var filePath = archive.paths.archivedSites + url.parse(req.url).pathname;
@@ -17,6 +17,6 @@ exports.handleRequest = function (req, res) {
     } 
   //res.end(archive.paths.list);
   } else if (req.method === 'POST') {
-    helper.createAssets(req, res, archive.paths.list);
+    archive.createAssets(req, res, archive.paths.list);
   }
 };

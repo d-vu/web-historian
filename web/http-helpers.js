@@ -21,7 +21,6 @@ exports.serveAssets = function(res, filePath, callback) {
   });
 
 
-
   fs.readFile(filePath, function(error, filePath) {
     if (error) {
       console.log(error);
@@ -34,21 +33,25 @@ exports.serveAssets = function(res, filePath, callback) {
   // css, or anything that doesn't change often.)
 };
 
-exports.createAssets = function(req, res, filePath) {
-  req.on('data', function(data) {
-    requestBody = '';
-    requestBody += data;
-  });
-  req.on('end', function() {
-    fs.writeFile(filePath, requestBody.slice(4) + '\n', function(err) {
-      if (err) {
-        console.log(err);
-      }
-    });
-    res.writeHead(302, exports.headers);
-    res.end();
-  });
-};
+// exports.createAssets = function(req, res, filePath) {
+//   req.on('data', function(data) {
+//     requestBody = '';
+//     requestBody += data;
+//     requestBody = JSON.parse(requestBody);
+//   });
+//   req.on('end', function() {
+//     // append to list
+//     // write list
+
+//     fs.writeFile(filePath, requestBody.url.slice(4) + '\n', function(err) {
+//       if (err) {
+//         console.log(err);
+//       }
+//     });
+//     res.writeHead(302, exports.headers);
+//     res.end();
+//   });
+// };
 
 
 

@@ -1,7 +1,11 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-var list = [];
+var http = require('http');
+var httpHelp = require('../web/request-handler');
+
+var list = exports.readListOfUrls(function() {});
+var requestBody;
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -69,7 +73,6 @@ exports.downloadUrls = function(urlArray) {
   fs.readdir(exports.paths.archivedSites, function(err, files) {
     urlArray.forEach(function(item) {
       if (files.indexOf(item) === -1) {
-        console.log(typeof item, item);
         fs.writeFile(exports.paths.archivedSites + '/' + item, exports.extractHtml(item), function(err) {
           if (err) {
             console.log(err);
@@ -82,5 +85,38 @@ exports.downloadUrls = function(urlArray) {
 };
 
 exports.extractHtml = function(url) {
+  var options = {
+    host: url,
+    port: 80,
+  };
+
+  http.get(options, function(res) {
+    console.log('Got a response:' + res.statusCode);
+
+  }).on('error', function(e) {
+    console.log('got an error: ' + e.message);
+  });
   // secret code
 };
+
+exports.createAssets = function(req, res, filePath) {
+  req.on('data', function(data) {
+    requestBody = '';
+    requestBody += data;
+    requestBody = JSON.parse(requestBody);
+  });
+  req.on('end', function() {
+    exports.addUrlToList(requestBody.url.slice(4), function() {});
+    // append to list
+    // write list
+
+    // fs.writeFile(filePath, requestBody.url.slice(4) + '\n', function(err) {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    // });
+    res.writeHead(302, httpHelp.headers);
+    res.end();
+  });
+};
+

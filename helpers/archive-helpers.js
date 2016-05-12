@@ -4,7 +4,6 @@ var _ = require('underscore');
 var http = require('http');
 var httpHelp = require('../web/request-handler');
 
-var list = exports.readListOfUrls(function() {});
 var requestBody;
 
 /*
@@ -42,6 +41,8 @@ exports.readListOfUrls = function(cb) {
     }
   });
 };
+
+var list = exports.readListOfUrls(function() {}) || [];
 
 exports.isUrlInList = function(target, someCallback) {
   someCallback(exports.readListOfUrls(function(list) {
@@ -96,17 +97,17 @@ exports.extractHtml = function(url) {
   }).on('error', function(e) {
     console.log('got an error: ' + e.message);
   });
-  // secret code
+ 
 };
 
 exports.createAssets = function(req, res, filePath) {
   req.on('data', function(data) {
     requestBody = '';
     requestBody += data;
-    requestBody = JSON.parse(requestBody);
   });
   req.on('end', function() {
-    exports.addUrlToList(requestBody.url.slice(4), function() {});
+    requestBody = JSON.parse(requestBody).url;
+    exports.addUrlToList(requestBody.slice(4), function() {}); //url=www.google.com
     // append to list
     // write list
 

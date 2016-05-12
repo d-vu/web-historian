@@ -14,13 +14,11 @@
 <script> 
   $(document).ready(function() {
     $('#target').submit(function(event) {
-      $url = $('input').val();
+      $url = 'url=' + $('input').val();
       $.ajax({
         type: 'POST',
         url: '//127.0.0.1:8080/',
-        data: JSON.stringify({
-          url: 'url=' + $url
-        })
+        data: JSON.stringify({url: $url})
       });
       event.preventDefault();
     })

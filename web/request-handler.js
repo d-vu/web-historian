@@ -13,11 +13,11 @@ exports.handleRequest = function (req, res) {
       var filePath = archive.paths.siteAssets + '/index.html';
       helper.serveAssets(res, filePath);
     } else {
-      var filePath = archive.paths.archivedSites + url.parse(req.url).pathname;
+      // var filePath = archive.paths.archivedSites + url.parse(req.url).pathname;
+      var filePath = url.parse(req.url).pathname;
       helper.serveAssets(res, filePath);
     } 
   } else if (req.method === 'POST') {
-    // htmlFetch.htmlfetch();
     archive.createAssets(req, res, archive.paths.list);
   }
 };

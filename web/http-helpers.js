@@ -25,35 +25,16 @@ exports.serveAssets = function(res, filePath, callback) {
     if (error) {
       console.log(error);
     } else {
-      console.log(data);
-      res.writeHead(200);
-      res.end(data);
+      //console.log(data);
+      res.writeHead(200, exports.headers);
+      res.write(data);
+      res.end();
     }
   });
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
 };
-
-// exports.createAssets = function(req, res, filePath) {
-//   req.on('data', function(data) {
-//     requestBody = '';
-//     requestBody += data;
-//     requestBody = JSON.parse(requestBody);
-//   });
-//   req.on('end', function() {
-//     // append to list
-//     // write list
-
-//     fs.writeFile(filePath, requestBody.url.slice(4) + '\n', function(err) {
-//       if (err) {
-//         console.log(err);
-//       }
-//     });
-//     res.writeHead(302, exports.headers);
-//     res.end();
-//   });
-// };
 
 
 

@@ -2,6 +2,7 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
 </head>
 <body>
   <form method="POST">
@@ -10,3 +11,17 @@
   Our robots are currently archiving the site you requested. Please check back soon for a freshly embalmed copy!
 </body>
 </html>
+<script> 
+  $(document).ready(function() {
+    $('#target').submit(function(event) {
+      $url = 'url=' + $('input').val();
+      $.ajax({
+        type: 'POST',
+        url: '//127.0.0.1:8080/',
+        // data: JSON.stringify({url: $url})
+      });
+      alert("Submission sent!");   
+      // event.preventDefault();
+    })
+  })
+  </script>
